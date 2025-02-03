@@ -1,18 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:async';
 
 Future<String> fetchData() async {
   final response =
       await http.get(Uri.parse('https://itpart.net/mobile/api/product1.php'));
-
   if (response.statusCode == 200) {
+    final jSONbody = jsonDecode(utf8.decode(response.bodyBytes));
     String strBody = response.body.toString();
-    debugPrint('${strBody}');
+    debugPrint(strBody);
+
     return strBody;
   } else {
-    throw Exception('problem..');
+    throw Exception('problem . .');
   }
 }
 
@@ -27,27 +28,18 @@ class _HttpBasicState extends State<HttpBasic> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.amberAccent,
-          title: const Text('Http Basic Page'),
-        ),
-        body: FutureBuilder(
-            future: fetchData(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else if (snapshot.hasData) {
-                return Text(
-                  '${snapshot.data}',
-                  style: TextStyle(fontSize: 18),
-                );
-              } else if (snapshot.hasError) {
-                return Text(
-                  '${snapshot.error}',
-                  style: TextStyle(fontSize: 18),
-                );
-              }
-              return const Text('No data availble');
-            }));
+      appBar: AppBar(title: Text('HttpBasic Page')),
+      body: FutureBuilder(future: fetchData(), builder: (context , asd){
+        if (asd.connectionState == ConnectionState.waiting){
+          return CircularProgressIndicator();
+        }
+        else if (asd.hasData){
+          return Text('${asd.data}');
+        }
+        else if (asd.hasError){
+          return Text('${asd.hasError}');
+        }
+        return Text('No data available');
+      })
+      );
   }
-}
